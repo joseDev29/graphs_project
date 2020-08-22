@@ -1,2 +1,3 @@
 # graphs_proyect
-Proyecto final: Estructura de datos; aplicacion interactiva para grafos
+Proyecto final: Estructura de datos;
+Descripcion: Aplicacion interactiva para grafos;
