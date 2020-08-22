@@ -20,7 +20,7 @@ for grafo in myFile:
     grafos.append(g)
 print("g0")
 grafos[0].Prim()
-
+print("coniguracion")
 print("g1")
 
 g1= Grafo()
