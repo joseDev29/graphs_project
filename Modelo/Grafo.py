@@ -1,7 +1,7 @@
 from typing import List
 from collections import deque
-from Vertice import *
-from Arista import *
+from Modelo.Vertice import *
+from Modelo.Arista import *
 import copy #para realizar copias de objetos
 
 class Grafo():
@@ -35,8 +35,8 @@ class Grafo():
             if self.ObtenerVertice(Origen)!=None and self.ObtenerVertice(Destino)!=None:
                 self.ListaAristas.append(Arista(Origen,Destino,Peso))
                 #actualizar las adyacencias
-                self.ObtenerVertice(Origen).getListaAdyacentes().append(Destino)
-
+                self.ObtenerVertice(Origen).getListaAdyacentes().append(self.ObtenerVertice(Destino))
+    
 
     def ObtenerVertice(self,nombre):
         for vertice in self.ListaVertices:
@@ -62,7 +62,12 @@ class Grafo():
 
     def getListaVisitados(self):
         return self.ListaVisitados
-
+    
+    def getVertices(self):
+        return self.ListaVertices
+    
+    def getAristas(self):
+        return self.ListaAristas
     def Amplitud(self,origen):
         VisitadosA=[]
         Cola=deque()
@@ -101,7 +106,7 @@ class Grafo():
                     aristasDisponibles.pop(0)
         for aris in AristasMarcadas:
             print("Vertice 1: {0}, Peso: {1}, Vertice 2: {2}".format(aris.getOrigen(),+aris.getPeso(),aris.getDestino()))   
-        return VerticesMarcados
+        return VerticesMarcados, AristasMarcadas
 
     def aristasDisponibles(self,verticesMarcados,aristasMarcadas):
         listaDisponibles=[]

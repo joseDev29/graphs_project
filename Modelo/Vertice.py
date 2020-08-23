@@ -1,7 +1,8 @@
 class Vertice:
     def __init__(self,dato):
         self.dato=dato
-        self.ListaAdyacentes=[] 
+        self.ListaAdyacentes=[]
+        self.coordenadas=[0,0]
 
     def getDato(self):
         return self.dato
@@ -14,3 +15,9 @@ class Vertice:
 
     def setListaAdyacentes(self,ListaAdyacentes):
         self.ListaAdyacentes=ListaAdyacentes
+    
+    def getCoordenadas(self):
+        return self.coordenadas
+
+    def setCoordenadas(self, valores):
+        self.coordenadas= valores

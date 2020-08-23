@@ -1,4 +1,4 @@
-import pygame,sys
+import pygame, sys, tkinter
 from pygame.locals import *
 
 pygame.init()
@@ -11,5 +11,6 @@ while True:
         if evento.type == QUIT:
             pygame.quit()
             sys.exit()
-
+    
+    
     pygame.display.update()

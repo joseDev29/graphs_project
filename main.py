@@ -1,4 +1,4 @@
-from Arista import *; from Grafo import *; from Vertice import *
+from Modelo.Grafo import *
 import json
 
 with open('Data/grafos.json') as myJSON:
@@ -21,9 +21,9 @@ for grafo in myFile:
 print("g0")
 grafos[0].Prim()
 print("coniguracion")
-print("g1")
 
-g1= Grafo()
+
+"""g1= Grafo()
 
 g1.IngresarVertice("G")
 g1.IngresarVertice("E")
@@ -128,4 +128,4 @@ print("aaa")
 g3.BoruvkaClase()
 
 
-print('Helooow')
+print('Helooow')"""
