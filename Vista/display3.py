@@ -1,6 +1,7 @@
 import pygame,sys,random
 from tkinter import *
 from tkinter import ttk
+from tkinter import filedialog
 from functools import partial
 pygame.init()
 fuente=pygame.font.Font(None,48)
@@ -48,11 +49,27 @@ pelota_speed_x=5
 pelota_speed_y=5
 
 game_over=False
+raiz= Tk()
+frame1= Frame(raiz)
+frame1.pack(fill='both', expand="True")
+"""frame1.config(bg='limegreen')
+frame1.config(width='300', height='200')
+        
+boton=ttk.Button(raiz, text='Saludar', command=v.saludar).pack(side=BOTTOM)
+print(boton)
+print(cont)"""
+archivo= filedialog.askopenfilename(title="abrir")
+print(archivo)
+raiz.mainloop()
 
+
+print(raiz.after_cancel(frame1))
 while not game_over:
+    
     for event in pygame.event.get():
         if event.type==pygame.QUIT:
             game_over=True
+            
         if event.type==pygame.KEYDOWN:
             #jugador 1
             if event.key==pygame.K_w:
@@ -108,18 +125,7 @@ while not game_over:
 
     if (0<player2_score<2 and cont==0)or(2<player2_score<4 and v.const==1):
         cont+=1
-        raiz= Tk()
-        frame1= Frame(raiz)
-        frame1.pack(fill='both', expand="True")
-        frame1.config(bg='limegreen')
-        frame1.config(width='300', height='200')
         
-        boton=ttk.Button(raiz, text='Saludar', command=v.saludar).pack(side=BOTTOM)
-        print(boton)
-        print(cont)
-        
-        raiz.mainloop()
-        print(raiz.after_cancel(frame1))
     if v.cosa:
         screen.blit(texto,(v.x,v.y))
     #coordenadas y

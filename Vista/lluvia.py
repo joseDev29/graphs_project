@@ -11,10 +11,10 @@ size=(800,500)
 screen=pygame.display.set_mode(size)
 clock=pygame.time.Clock()
 coor_list=[]
-for i in range(60):
+for i in range(10):
         x=random.randint(0,800)
         y=random.randint(0,500)
-        pygame.draw.circle(screen,RED,(x,y),5)
+        pygame.draw.circle(screen,RED,(x,0),5)
         coor_list.append([x,y])
 while True:
     for event in pygame.event.get():
@@ -26,8 +26,7 @@ while True:
         y=coord[1]
         pygame.draw.circle(screen,RED,(x,y),1)
         coord[1]+=1
-        if coord[1]>500:
-            coord[1]=0
+        
     
-    pygame.display.flip()
-    clock.tick(60)
+pygame.display.flip()
+clock.tick(60)

@@ -40,7 +40,7 @@ for arista in aristasPrim:
     temp.append(grafos[0].ObtenerVertice(arista.getDestino()).getCoordenadas())
     listaPrim.append(temp)
 
-
+cont=0
 pygame.init()
 
 #Definir colores
@@ -86,8 +86,8 @@ while True:
         speed_x*=-1
     if (cord_y>420 or cord_y<0):
         speed_y*=-1"""
-    cord_x+=speed_x
-    cord_y+=speed_y
+    """cord_x+=speed_x
+    cord_y+=speed_y"""
     #----LOGICA----
     #Color de fondo
     screen.fill(WHITE)
@@ -100,11 +100,38 @@ while True:
         texto=fuente.render(vertice.getDato(),0,BLUE)
         pygame.draw.circle(screen,RED,vertice.getCoordenadas(),25)
         screen.blit(texto,[vertice.getCoordenadas()[0]-11, vertice.getCoordenadas()[1]-7])
+    
+    """if cont<len(listaPrim):
+        cont+=1
+        for i in range(0, cont):
+            arista= listaPrim[i]
+            pygame.draw.line(screen,RED,(arista[0][0],arista[0][1]),(arista[1][0],arista[1][1]),width)
+            pygame.display.flip()
+            clock.tick(0.5)"""
+    if cont<1:
+        for arista in listaPrim:
+            for event in pygame.event.get():
+                if event.type==pygame.QUIT:
+                    sys.exit()
+            pygame.draw.line(screen,RED,(arista[0][0],arista[0][1]),(arista[1][0],arista[1][1]),width)
+            cord_x=arista[0][0]
+            cord_y=arista[0][1]
+            while cord_x<arista[0][0] and cord_y<arista[1][1]:
+                cord_x+=speed_x
+                cord_y+=speed_y
+                pygame.draw.rect(screen, GREEN,(cord_x,cord_y,50,50))
+                pygame.display.flip()
+                clock.tick(60)
 
-    for arista in listaPrim:
-        pygame.draw.line(screen,RED,(arista[0][0],arista[0][1]),(arista[1][0],arista[1][1]),width)
+            pygame.display.flip()
+            clock.tick(1)
+        cont+=1
+    else:
+        for arista in listaPrim:
+            pygame.draw.line(screen,RED,(arista[0][0],arista[0][1]),(arista[1][0],arista[1][1]),width)
+            
+    
     """for x in range(100,700,100):
-        pygame.draw.rect(screen, GREEN,(x,30,50,50))
         pygame.draw.rect(screen, GREEN,(x,430,50,50))
         pygame.draw.rect(screen, GREEN,(x,230,50,50))"""
     #----ZONA DE DIBUJO-----
