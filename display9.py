@@ -95,23 +95,42 @@ class Mapeador():
         self.coordenadasNoDisponibles=[]
         self.grafo= grafo
         self.mapaPantalla=[]
+
     def mapearGrafo(self):
-        for i in range(len(self.grafo.getVertices())):
+        """for i in range(len(self.grafo.getVertices())):
             coordenadas= self.mapaPantalla[randint(0, len(self.mapaPantalla)-1)]
             if self.verificarCoordenada(coordenadas)==False:
                 self.grafo.getVertices()[i].setCoordenadas(coordenadas)
                 self.rellenarCoordenadas(coordenadas)
                 self.coordenadasNoDisponibles.append(coordenadas)
             else:
-                i=i-1
+                i=i-1"""
+        self.algo()
+        for vertice in self.grafo.getVertices():
+
+            myBool=True
+
+            while myBool:
+
+                posMap= randint(0,len(self.mapaPantalla)-1)
+                coordenada= self.mapaPantalla[posMap][randint(0,len(self.mapaPantalla[posMap])-1)]
+                
+                if coordenada not in self.coordenadasNoDisponibles:
+                    vertice.setCoordenadas(coordenada)
+                    self.rellenarCoordenadas(coordenada)
+                    self.coordenadasNoDisponibles.append(coordenada)
+                    myBool=False
+                       
             
+
+      
     def getDatosVertices(self):
         datosVertices=[]
         for vertice in self.grafo:
             datosVertices.append(vertice.getDato())
 
     def rellenarCoordenadas(self, punto):
-        espacio=50
+        espacio=80
         inicial=[(punto[0]-espacio), (punto[1]-espacio)]
         final=[(punto[0]+espacio), (punto[1]+espacio)]
 
@@ -121,21 +140,70 @@ class Mapeador():
                 x=inicial[0]+k
                 self.coordenadasNoDisponibles.append([x,y])
         
-    
-    def mapearPantalla(self, pantalla):
+    def algo(self):
+        
+        inicial=[50,50]
+        final=[150,150]
+        while final[1] <= (self.pantalla[1]-50):
+            
+            while final[0] <= (self.pantalla[0]-50):
+
+                self.rellenar(inicial, final)
+                inicial[0]+=100
+                final[0]+=100
+                
+            inicial[0]=50
+            final[0]=150
+            inicial[1]+=100
+            final[1]+=100
+        
+            
+    """def mapearPantalla(self, pantalla):
         inicial=[50 , 50]
         final=[pantalla[0]-50 , pantalla[1]-50]
         
-        for i in range((final[1]-inicial[1])+1):
+        for i in range((final[1]-inicial[1])):
             y=inicial[1]+i
 
-            for k in range((final[0]-inicial[0])+1):
+            for k in range((final[0]-inicial[0])):
                 x=inicial[0]+k
 
                 self.mapaPantalla.append([x,y])
+        
+        print(len(self.mapaPantalla))
         print(self.mapaPantalla)
+        return self.mapaPantalla"""
 
-        return self.mapaPantalla
+    def rellenar(self, inicial, final):
+        tmp=[]
+        for i in range((final[1]-inicial[1])):
+            y=inicial[1]+i
+
+            for k in range((final[0]-inicial[0])):
+                x=inicial[0]+k
+
+                tmp.append([x,y])
+
+        self.mapaPantalla.append(tmp)
+        
+        
+        
+    
+    """def mapearPantalla2(self):
+        pantalla= self.pantalla
+        inicial=[50,50]; final=[150,150]; limite=[950,550]
+
+        while inicial[1]<limite[1]:
+
+            while not (inicial[0] > final[0] or inicial[1] > final[1]):
+                tmp=[]
+                for i in range((final[1]-inicial[1])+1):
+                    y=inicial[1]+i
+
+                    for k in range((final[0]-inicial[0])+1):
+                        x=inicial[0]+k
+            
+        print(len(self.mapaPantalla))"""
     
     def verificarCoordenada(self, coordenada):
         boolean= False
@@ -168,7 +236,7 @@ class Mapeador():
             
 pantalla= [1000,600]
 graficador= Mapeador(pantalla,grafo)
-graficador.mapearPantalla(graficador.pantalla)
+graficador.algo()
 graficador.mapearGrafo()
 
 
@@ -199,9 +267,9 @@ while True:
             #NO OLVIDAR EL MACHETE
             if (event.pos[0]>=10 and event.pos[0]<=60) and (event.pos[1]>=10 and event.pos[1]<=27) :
                 print("está dentro")
-                """raiz= Tk()
+                raiz= Tk()
                 opciones= Menu(raiz)
-                raiz.mainloop()"""
+                raiz.mainloop()
                 
         if event.type==pygame.QUIT:
             sys.exit()
@@ -218,6 +286,7 @@ while True:
     for vertice in grafo.getVertices():
         texto=fuente.render(vertice.getDato(),0,BLUE)
         pygame.draw.circle(screen,BLACK,vertice.getCoordenadas(),24)
+        print('coordenadas de {0} : {1}'.format(vertice.getDato(), vertice.getCoordenadas()))
         pygame.draw.circle(screen,RED,vertice.getCoordenadas(),22)
         screen.blit(texto,[vertice.getCoordenadas()[0]-11, vertice.getCoordenadas()[1]-7])
 
