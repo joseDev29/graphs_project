@@ -37,12 +37,23 @@ class Grafo():
                 #actualizar las adyacencias
                 self.ObtenerVertice(Origen).getListaAdyacentes().append(self.ObtenerVertice(Destino))
     
+    def pesoTotal(self):
+        suma=0
+        for Arista in self.ListaAristas:
+            suma+= Arista.getPeso()
+        return suma
 
     def ObtenerVertice(self,nombre):
         for vertice in self.ListaVertices:
             if nombre==vertice.getDato():
                 return vertice
         return None
+
+    def obtenerPesoArista(self, origen, destino):
+        for i in range(len(self.ListaAristas)):
+            if self.ListaAristas[i].getOrigen()==origen and self.ListaAristas[i].getDestino()==destino:
+                return self.ListaAristas[i].getPeso()
+        return False
 
     def VerificarArista(self,Origen,Destino):
         for i in range(len(self.ListaAristas)):

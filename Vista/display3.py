@@ -49,18 +49,15 @@ pelota_speed_x=5
 pelota_speed_y=5
 
 game_over=False
-raiz= Tk()
-frame1= Frame(raiz)
-frame1.pack(fill='both', expand="True")
-"""frame1.config(bg='limegreen')
-frame1.config(width='300', height='200')
+
+"""
+
         
 boton=ttk.Button(raiz, text='Saludar', command=v.saludar).pack(side=BOTTOM)
 print(boton)
 print(cont)"""
-archivo= filedialog.askopenfilename(title="abrir")
+ #archivo= filedialog.askopenfilename(title="abrir")
 print(archivo)
-raiz.mainloop()
 
 
 print(raiz.after_cancel(frame1))

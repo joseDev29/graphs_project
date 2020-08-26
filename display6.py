@@ -2,7 +2,7 @@ from Modelo.Grafo import *
 from tkinter import *
 from tkinter import ttk
 from copy import copy
-import pygame, sys, random, json
+import pygame, sys, random, json, math
 
 
 with open('Data/grafos.json') as myJSON:
@@ -24,17 +24,109 @@ for grafo in myFile:
 
     grafos.append(g)
 
-def saludar():
-    print('Qhubo mi perro')
+myGraph= grafos[0]
+unidad=int(math.sqrt((800**2 + 500**2))/myGraph.pesoTotal())
+print(unidad)
+aristas= myGraph.getAristas()
+vertices=[]
+coordenadasMarcadas=[]
+for arista in aristas:
 
-def obtenerFuncion(coordenadas, posX):
-    x1=coordenadas[0]
-    x2=coordenadas[2]
-    y1=coordenadas[1]
-    y2=coordenadas[3]
+    peso= arista.getPeso()*unidad
 
-    funcion= (((y2-y1)//(x2-x1))*(posX-x1))+y1
-    return funcion
+    if len(vertices)<=0:
+        origen= myGraph.ObtenerVertice(arista.getOrigen()).setCoordenadas([40,40])
+        vertices.append(arista.getOrigen().getDato())
+    else:
+        print('nada')
+        
+
+class Mapeador():
+    def __init__(self, unidadEspacio, pantalla):
+        self.unidadEspacio= unidadEspacio
+        self.coordenadasVertices=[]
+        self.pantalla=[]
+        self.coordenadasNoDisponibles=[]
+
+
+    
+    def mapearVertice(self, origen, distancia):
+
+        limites=[[origen[0], origen[1]-distancia],
+                [origen[0]+distancia, origen[1]],
+                [origen[0], origen[1]+distancia],
+                [origen[0]-distancia, origen[1]]]
+
+        coordenadas=[]
+
+        for i in range(4):
+
+            if i==0:
+                x=limites[0][0]
+                y=limites[0][1]
+                while x < limites[1][0]:
+                    x+=1
+                    y+=1
+                    if(x>0 and x<self.pantalla[0] and y>25 and y<self.pantalla[1]):
+                        coordenadas.append([x,y])
+                    
+
+            elif i==1:
+                x=limites[1][0]
+                y=limites[1][1]
+                while x > limites[2][0]:
+                    x-=1
+                    y+=1
+                    if(x>0 and x<self.pantalla[0] and y>25 and y<self.pantalla[1]):
+                        coordenadas.append([x,y])
+                    
+
+            elif i==2:
+                x=limites[2][0]
+                y=limites[2][1]
+                while x > limites[3][0]:
+                    x-=1
+                    y-=1
+                    if(x>0 and x<self.pantalla[0] and y>25 and y<self.pantalla[1]):
+                        coordenadas.append([x,y])
+                    
+            elif i==3:
+                x=limites[3][0]
+                y=limites[3][1]
+                while x < limites[0][0]:
+                    x+=1
+                    y-=1
+                    if(x>0 and x<self.pantalla[0] and y>25 and y<self.pantalla[1]):
+                        coordenadas.append([x,y])
+                    
+            else:
+                print('Error, sector del plano no valido')
+    
+    def ubicarVertice(self, listaCoordenadas, vertice):
+
+        for i in range(len(listaCoordenadas)):
+            if listaCoordenadas[i] not in self.coordenadasNoDisponibles:
+                vertice.setCoordenadas(listaCoordenadas[i])
+            
+
+        
+        
+
+
+def rellenarCoordenadas(inicial, final, listaCoordenadas):
+    for i in range((final[1]-inicial[1])+1):
+        y=inicial[1]+i
+
+        for k in range((final[0]-inicial[0])+1):
+            x=inicial[0]+k
+
+            listaCoordenadas.append([x,y])
+    print(len(listaCoordenadas))
+
+rellenarCoordenadas([35,35], [780,580], [])
+            
+
+
 
 
 
