@@ -108,7 +108,7 @@ grafo= Grafo(); pantalla=[1000,600]; mapeador= Mapeador(pantalla, grafo)
 
 class Menu(Frame):
     def __init__(self,master=None):
-        super().__init__(master,width=200,height=400)
+        super().__init__(master,width=200,height=500)
         self.master=master
         self.pack()
         self.crear_botones()
@@ -133,6 +133,7 @@ class Menu(Frame):
         self.btnPrim=Button(self, text='Prim',command=self.recorridoPrim)
         self.btnBoruvka=Button(self, text='Boruvka',command=self.recorridoBoruvka)
         self.btnKruskal=Button(self, text='Kruskal',command=self.recorridoKruskal)
+        self.btnConex=Button(self, text='Conexo?',command=self.btnConexo)
         #Se les da posición a los botones
         self.btnCargarGrafo.place(x=10,y=10,width=100,height=30)
         self.btnPrueba.place(x=10,y=50,width=100,height=30)
@@ -142,8 +143,12 @@ class Menu(Frame):
         self.btnPrim.place(x=10,y=250,width=100,height=30)
         self.btnBoruvka.place(x=10,y=300,width=100,height=30)
         self.btnKruskal.place(x=10,y=350,width=100,height=30)
+        self.btnConex.place(x=10,y=400,width=100,height=30)
         
-    
+    def btnConexo(self):
+        texto= grafo.esconexo()
+        return texto
+
     def prueba(self):
         pass
     
@@ -345,8 +350,8 @@ SUPERBLUE= (40, 210, 250)
 size=(pantalla[0],pantalla[1])
 randomColor=[(64, 242, 29), (193, 255, 181), (181, 255, 241), (216, 111, 237), (237, 17, 42) ]
 fuente=pygame.font.Font(None,30)
-
-
+fuente2=pygame.font.Font(None,17)
+fuente3=pygame.font.Font(None,30)
 
 #Crear ventana
 screen=pygame.display.set_mode(size)
@@ -405,7 +410,7 @@ def dibujarVertices(grafo):
         screen.blit(planet, cordtmp)
         screen.blit(texto,[vertice.getCoordenadas()[0]-10, vertice.getCoordenadas()[1]-10])
         if len(vertice.getListaAdyacentes()) <= 0:
-            screen.blit(fuente.render('Pozo',0,WHITE),[vertice.getCoordenadas()[0]-10, vertice.getCoordenadas()[1]])
+            screen.blit(fuente.render('Pozo',0,WHITE),[vertice.getCoordenadas()[0]-20, vertice.getCoordenadas()[1]])
 
 def dibujarAristas(grafo):
     for vertice in grafo.getVertices():
@@ -413,36 +418,17 @@ def dibujarAristas(grafo):
             pygame.draw.line(screen, (230, 181, 255), (vertice.getCoordenadas()[0],vertice.getCoordenadas()[1]),(adyacente.getCoordenadas()[0],adyacente.getCoordenadas()[1]), 1)
     
     if grafo.grafodirigido:
-        
+        x=80
+        y=10
         for arista in grafo.getAristas():
-            x1=grafo.ObtenerVertice(arista.getOrigen()).getCoordenadas()[0]
-            y1=grafo.ObtenerVertice(arista.getOrigen()).getCoordenadas()[1]
-            x2=grafo.ObtenerVertice(arista.getDestino()).getCoordenadas()[0]
-            y2=grafo.ObtenerVertice(arista.getDestino()).getCoordenadas()[1]
-            if grafo.grafodirigido:
-                if x2==x1 and y2<y1:
-                    pygame.draw.circle(screen,RED,(x2, y2+12),10)
-                elif x2>x1 and y2<y1:
-                    pygame.draw.circle(screen,RED,(x2-12, y2+11),10)
-                elif x2>x1 and y2==y1:
-                    
-                    pygame.draw.circle(screen,RED,(x2+12, y2),10)
-                elif x2>x1 and y2>y1:
-                    
-                    pygame.draw.circle(screen,RED,(x2-12, y2-12),10)
-                elif x2==x1 and y2>y1:
-                    pygame.draw.circle(screen,RED,(x2, y2-12),10)
-                elif x2<x1 and y2>y1:
-                    
-                    pygame.draw.circle(screen,RED,(x2+12, y2-12),10)
-                elif x2<x1 and y2==y1:
-                    
-                    pygame.draw.circle(screen,RED,(x2+12, y2),10)
-                elif x2<x1 and y2<y1:
-                    pygame.draw.circle(screen,RED,(x2+12, y2-12),10)
-                else:
-                    print('nada')
-                        
+            info= '{0} -> {1} : {2}'.format(arista.getOrigen(), arista.getDestino(), arista.getPeso())
+            screen.blit(fuente2.render(info,0,WHITE),[x, y])
+            if (x+40)>=950:
+                y+=15
+                x=80
+            else:
+                x+=60
+            
 def dibujarRecorrido(aristas, animacion):
     #raiz.destroy()
     dibujarAristas(grafo)
@@ -548,7 +534,7 @@ def dibujarBoton():
     screen.blit(menuIcon, (18,4))
 
 
-conexo="yo"
+
 while True:
     abrir=0 
     grafo.setPozos(0) 
@@ -556,11 +542,10 @@ while True:
 
     screen.blit(fondo, (0,0))
     dibujarBoton()
-    screen.blit(fuente.render(conexo,0,WHITE),[450, 10])
+    #
     for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
-            #print(event.pos)
-            #NO OLVIDAR EL MACHETE
+            
             if (event.pos[0]>=10 and event.pos[0]<=60) and (event.pos[1]>=10 and event.pos[1]<=27 and abrir==0) :
                 print("Menu abre")
                 raiz= Tk()
@@ -574,7 +559,9 @@ while True:
         
         dibujarAristas(grafo)
         dibujarVertices(grafo)
-    #conexo=grafo.esconexo()
+
+    
+    
 
     pygame.display.flip()
     clock.tick(20)
