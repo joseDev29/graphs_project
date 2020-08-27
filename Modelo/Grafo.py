@@ -10,6 +10,18 @@ class Grafo():
         self.ListaVertices=[]
         self.ListaAristas=[]
         self.ListaVisitados=[]
+        self.pozos = 0
+        self.fuentes = 0
+        self.grafodirigido=True
+
+    def setVertices(self, lista):
+        self.ListaVertices= lista
+    
+    def setAristas(self, lista):
+        self.ListaAristas= lista
+
+    def setVisitados(self, lista):
+        self.ListaVisitados=lista
 
     def IngresarVertice(self,dato):
         if not self.Verificarvertice(dato):
@@ -30,12 +42,22 @@ class Grafo():
         for Arista in self.ListaAristas:
             print("dato: {0}-{1}-{2}".format(Arista.getOrigen(),Arista.getDestino(),Arista.getPeso()))
 
-    def IngresarAristas(self,Origen,Destino,Peso):
+    def getGrafoDirigido(self):
+        return self.grafodirigido
+
+    def IngresarAristas(self,Origen,Destino,Peso,dirigido):
         if not self.VerificarArista(Origen,Destino):
             if self.ObtenerVertice(Origen)!=None and self.ObtenerVertice(Destino)!=None:
-                self.ListaAristas.append(Arista(Origen,Destino,Peso))
-                #actualizar las adyacencias
-                self.ObtenerVertice(Origen).getListaAdyacentes().append(self.ObtenerVertice(Destino))
+                print("{0}Dirigido o no".format(dirigido))
+                if dirigido:
+                    self.ListaAristas.append(Arista(Origen,Destino,Peso))
+                    #actualizar las adyacencias
+                    self.ObtenerVertice(Origen).getListaAdyacentes().append(self.ObtenerVertice(Destino))
+                elif not dirigido:
+                    self.ListaAristas.append(Arista(Destino, Origen, Peso))
+                    self.ObtenerVertice(Origen).getListaAdyacentes().append(self.ObtenerVertice(Destino))
+                    self.ObtenerVertice(Destino).getListaIncidentes().append(self.ObtenerVertice(Origen))
+                    self.grafodirigido=False
     
     def pesoTotal(self):
         suma=0
@@ -60,6 +82,12 @@ class Grafo():
             if self.ListaAristas[i].getOrigen()==Origen and self.ListaAristas[i].getDestino()==Destino:
                 return True
         return False
+
+    def VerificarArista2(self,Origen,Destino):
+        for i in range(len(self.ListaAristas)):
+            if self.ListaAristas[i].getOrigen()==Origen and self.ListaAristas[i].getDestino()==Destino:
+                return self.ListaAristas[i]
+        return None
     
     def Profundidad(self,dato):
         if dato in self.ListaVisitados:
@@ -167,6 +195,7 @@ class Grafo():
 
         for arista in conjuntoKruskal:
             print("{0}---{1}---{2}".format(arista.getOrigen(),arista.getPeso(),arista.getDestino()))
+        return conjuntoKruskal
 
 
     def KruskalClass(self):
@@ -179,7 +208,7 @@ class Grafo():
 
         for dato in aristasKruskal:
             print("Origen:{0} Destino: {1} Peso {2}".format(dato.getOrigen(),dato.getDestino(),dato.getPeso()))
-
+        return aristasKruskal
     
     def OperacionConjuntos(self,ListaConjuntos,AristasKruskal,Conjuntotemp):
         encontrado1=-1
@@ -231,6 +260,7 @@ class Grafo():
         
         for arista in aristasBoruvka:
             print("aristas:{0}---{1}---{2}".format(arista.getPeso(),arista.getOrigen(),arista.getDestino()))
+        return aristasBoruvka
 
     def Buscarmenor(self,Nodo,copiaAristas):
         temp=[]
@@ -274,16 +304,21 @@ class Grafo():
         return cantidad
 
     def OperacionesconjuntosB(self,Nodo, ListaConjuntos, AristasBorukvka,copiaAristas):
+        
         encontrado1=-1
         encontrado2=-1
         menor = self.Buscarmenor(Nodo, copiaAristas)
+        print(menor)
         if not menor==None:#si no esta vacio
+            print('kkkkkkkkk')
             if not ListaConjuntos:#si esta vacia
                 ListaConjuntos.append({menor.getOrigen(),menor.getDestino()})
                 AristasBorukvka.append(menor)
             else:
                 for i in range(len(ListaConjuntos)):
+                    
                     if  (menor.getOrigen()  in ListaConjuntos[i]) and (menor.getDestino() in ListaConjuntos[i]):
+                        
                         return False##Camino cicliclo
 
                 for i in range(len(ListaConjuntos)):
@@ -312,3 +347,132 @@ class Grafo():
                 if encontrado1 == -1 and encontrado2 == -1:# si no existe en los conjuntos
                     ListaConjuntos.append({menor.getOrigen(), menor.getDestino()})
                     AristasBorukvka.append(menor)
+
+    def caminoMasCorto(self, origen, destino):
+        VerticesAux = []
+        VerticesD = []
+        caminos = self.dijkstra(origen, VerticesAux)
+        cont = 0
+        for i in caminos:
+            print("La distancia mínima a: " + self.ListaVertices[cont].getDato() + " es " + str(i))
+            cont = cont + 1
+
+        self.rutas(VerticesD,VerticesAux,destino,origen)
+        print("El camino más corto de: " + origen + " a " + destino + " es: ")
+        print(VerticesD)
+
+    def rutas(self,VerticesD, VerticesAux, destino, origen):
+        verticeDestino = self.ObtenerVertice(destino)
+        indice = self.ListaVertices.index(verticeDestino)
+        if VerticesAux[indice] is None:
+            print("No hay camino entre: ", (origen, destino))
+            return
+        aux = destino
+        while aux is not origen:
+            verticeDestino = self.ObtenerVertice(aux)
+            indice = self.ListaVertices.index(verticeDestino)
+            VerticesD.insert(0, aux)
+            aux = VerticesAux[indice]
+        VerticesD.insert(0, aux)
+
+    def dijkstra(self, origen, VerticesAux):
+        marcados = []  # la lista de los que ya hemos visitado
+        caminos = []  # la lista final
+        # iniciar los valores en infinito
+        for v in self.ListaVertices:
+            caminos.append(float("inf"))
+            marcados.append(False)
+            VerticesAux.append(None)
+            if v.getDato() is origen:
+                caminos[self.ListaVertices.index(v)] = 0
+                VerticesAux[self.ListaVertices.index(v)] = v.getDato()
+        while not self.todosMarcados(marcados):
+            aux = self.menorNoMarcado(caminos, marcados)  # obtuve el menor no marcado
+            if aux is None:
+                break
+            indice = self.ListaVertices.index(aux)  # indice del menor no marcado
+            marcados[indice] = True  # marco como visitado
+            valorActual = caminos[indice]
+            for vAdya in aux.getListaAdyacentes():
+                indiceNuevo = self.ListaVertices.index(self.ObtenerVertice(vAdya))
+                arista = self.VerificarArista2(vAdya, aux.getDato())
+                if caminos[indiceNuevo] > valorActual + arista.getPeso():
+                    caminos[indiceNuevo] = valorActual + arista.getPeso()
+                    VerticesAux[indiceNuevo] = self.ListaVertices[indice].getDato()
+        return caminos
+
+    def menorNoMarcado(self, caminos, marcados):
+        verticeMenor = None
+        caminosAux = sorted(caminos)
+        copiacaminos = copy.copy(caminos)
+        bandera = True
+        contador = 0
+        while bandera:
+            menor = caminosAux[contador]
+            if marcados[copiacaminos.index(menor)] == False:
+                verticeMenor = self.ListaVertices[copiacaminos.index(menor)]
+                bandera = False
+            else:
+                copiacaminos[copiacaminos.index(menor)] = "x"
+                contador = contador + 1
+        return verticeMenor
+
+    def todosMarcados(self, marcados):
+        for j in marcados:
+            if j is False:
+                return False
+        return True
+    
+
+
+    def esfdconexo(self):
+        texto=" "
+        pozos=self.numerodepozos()
+        fuentes=self.numerodefuentes()
+        print("{0}---pozos".format(pozos))
+        print("{0}---fuentes".format(fuentes))
+        if pozos>0 or fuentes>0 :
+            texto="-----El Grafo es Debilmente Conexo--------"
+        else:
+            texto="-----El Grafo es Fuertemente Conexo-------"
+
+        return texto
+
+    def esconexo(self):
+        texto=" "
+        if self.grafodirigido == False:
+            texto= "-------El grafo no dirigido es conexo---------"   
+        else:
+            texto= self.esfdconexo()
+        return texto
+    
+    def numerodepozos(self):
+        
+        for Vertice in self.getVertices():
+            print("------------------------------llllllllllllllll")
+            print(Vertice.getDato())
+            print(len(Vertice.getListaAdyacentes()))
+
+            if len(Vertice.getListaAdyacentes())<=0:
+                print("aquiiiiiiiiiiiiii")
+                self.pozos+=1
+
+        return self.pozos
+
+    def numerodefuentes(self):
+
+        for Vertice in self.getVertices():
+            print(Vertice.getDato())
+                
+            if len(Vertice.getListaIncidentes())==0:
+                self.fuentes=self.fuentes+1
+                print("fuentes")
+                print(self.fuentes)
+
+        return self.fuentes
+
+    def setFuentes(self,dato):
+        self.fuentes=dato
+
+    def setPozos(self,dato):
+        self.pozos=dato

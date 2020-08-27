@@ -3,9 +3,12 @@ from random import randint
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
+import tkinter as tk
 import json, pygame, sys
+import os
+abrir=0
 
-with open('Data/grafo2.json') as myJSON:
+with open('Data/grafo1.json') as myJSON:
    myFile = json.load(myJSON)
 
 grafo= Grafo()
@@ -212,28 +215,74 @@ class Mapeador():
                 boolean= True
         return boolean
     
+class Menu(Frame):
+    def __init__(self,master=None):
+        super().__init__(master,width=200,height=300)
+        self.master=master
+        self.pack()
+        self.crear_botones()
+        #self.transient(master)
+    def crear_botones(self):
+        #Se instancian los botones
+        self.btnCargarGrafo=Button(self,text="Cargar Grafo",command=self.ventanaArchivo)
+        self.btnObstruirCamino=Button(self,text='Obstruir camino',command=self.prueba)
+        self.btnPrueba=Button(self,text="Agregar Vertice",command=self.hija)
+        self.btnAgregarArista=Button(self, text='Agregar Arista',command=self.prueba)
+        self.btnDijkstra=Button(self, text='Dijkstra',command=self.prueba)
+        self.btnMiniumTree=Button(self, text='Minium Tree',command=self.prueba)
+        #Se les da posición a los botones
+        self.btnCargarGrafo.place(x=10,y=10,width=100,height=30)
+        self.btnPrueba.place(x=10,y=50,width=100,height=30)
+        self.btnObstruirCamino.place(x=10,y=100,width=100,height=30)
+        self.btnAgregarArista.place(x=10,y=150,width=100,height=30)
+        self.btnDijkstra.place(x=10,y=200,width=100,height=30)
+        self.btnMiniumTree.place(x=10,y=250,width=100,height=30)
+        
+    
+    def prueba(self):
+        print("hola")
 
-    
-class Menu():
-    
-    def __init__(self,master):
-        self.frame=Frame(master)
-        self.frame.pack(fill='both', expand="True")
-        self.frame.config(width='200', height='300')
-        self.frame.config(bg='gray')
-        self.botones()
-
-    def botones(self):
-        boton1=Button(self.frame, text='Cargar Grafo',font=("Verdana",10), command=self.ventanaArchivo() ).place(x=10,y=10)
-        boton2=Button(self.frame, text='Agregar vertice',font=("Verdana",10)).place(x=10,y=50)
-        boton3=Button(self.frame, text='Obstruir camino',font=("Verdana",10)).place(x=10,y=100)
-        boton4=Button(self.frame, text='Agregar Arista',font=("Verdana",10)).place(x=10,y=150)
-        boton5=Button(self.frame, text='Dijkstra',font=("Verdana",10)).place(x=10,y=200)
-        boton6=Button(self.frame, text='Minium Tree',font=("Verdana",10)).place(x=10,y=250)
-    
     def ventanaArchivo(self):
-        archivo = filedialog.askopenfilename(title="abrir", filetypes=(("json files","*.json")))
+        archivo = filedialog.askopenfilename(initialdir="/",title="Cargar Grafo", filetypes=(("json files","*.json"),("all files",".")))
+        print(archivo)
 
+    def hija(self):
+        t1 = Toplevel(self,bg="blue")
+ 
+    ## Establece el tamaño para la ventana.
+        t1.geometry('400x200+20+20')
+    
+        ## Provoca que la ventana tome el focus
+        t1.focus_set()
+    
+        ## Deshabilita todas las otras ventanas hasta que
+        ## esta ventana sea destruida.
+        t1.grab_set()
+    
+        ## Indica que la ventana es de tipo transient, lo que significa
+        ## que la ventana aparece al frente del padre.
+        t1.transient(master=self)
+    
+        ## Crea un widget Label en la ventana
+        Label(t1, text='Ventana hija',bg="blue").pack(padx=10, pady=10)
+    
+        ## Crea un widget que permite cerrar la ventana,
+        ## para ello indica que el comando a ejecutar es el
+        ## metodo destroy de la misma ventana.
+        Button(t1,text="Cerrar",bg="green", command=t1.destroy).pack()
+    
+        ## Crea un entry.
+        e=Entry(t1,bg="lightyellow")
+    
+        ## Establece el focus en el entry.
+        e.focus()
+        e.pack()
+    
+        Button(t1,text="Saludar",bg="green", command=self.prueba(e)).pack()
+        ## Pausa el mainloop de la ventana de donde se hizo la invocación.
+        t1.wait_window(t1)
+    def saludar2(self,entrada):
+        print(entrada)
 
             
 pantalla= [1000,600]
@@ -252,7 +301,7 @@ RED = (255,0,0)
 BLUE = (0,0,255)
 SUPERBLUE= (40, 210, 250)
 size=(graficador.pantalla[0],graficador.pantalla[1])
-randomColor=[(64, 242, 29), (193, 255, 181), (181, 255, 241), (216, 111, 237), (237, 17, 42) ]
+
 fuente=pygame.font.Font(None,30)
 
 #Crear ventana
@@ -261,18 +310,17 @@ screen=pygame.display.set_mode(size)
 clock=pygame.time.Clock()
 
 while True:
-
+    abrir=0
     for event in pygame.event.get():
 
         if event.type==pygame.MOUSEBUTTONDOWN:
             #print(event.pos)
             #NO OLVIDAR EL MACHETE
-            if (event.pos[0]>=10 and event.pos[0]<=60) and (event.pos[1]>=10 and event.pos[1]<=27) :
-                print("Menu abre")
-                raiz= Tk()
+            if (event.pos[0]>=10 and event.pos[0]<=60) and (event.pos[1]>=10 and event.pos[1]<=27) and abrir==0 :
+                raiz=Tk()
                 opciones= Menu(raiz)
-                raiz.mainloop()
-                
+                opciones.mainloop()
+        abrir=1
         if event.type==pygame.QUIT:
             sys.exit()
 
@@ -283,12 +331,12 @@ while True:
     for vertice in grafo.getVertices():
 
         for adyacente in vertice.getListaAdyacentes():
-            pygame.draw.line(screen, randomColor[randint(0, len(randomColor)-1)], (vertice.getCoordenadas()[0],vertice.getCoordenadas()[1]),(adyacente.getCoordenadas()[0],adyacente.getCoordenadas()[1]), 1)
+            pygame.draw.line(screen, SUPERBLUE, (vertice.getCoordenadas()[0],vertice.getCoordenadas()[1]),(adyacente.getCoordenadas()[0],adyacente.getCoordenadas()[1]), 1)
     
     for vertice in grafo.getVertices():
         texto=fuente.render(vertice.getDato(),0,BLUE)
         pygame.draw.circle(screen,BLACK,vertice.getCoordenadas(),24)
-        print('coordenadas de {0} : {1}'.format(vertice.getDato(), vertice.getCoordenadas()))
+        #print('coordenadas de {0} : {1}'.format(vertice.getDato(), vertice.getCoordenadas()))
         pygame.draw.circle(screen,RED,vertice.getCoordenadas(),22)
         screen.blit(texto,[vertice.getCoordenadas()[0]-11, vertice.getCoordenadas()[1]-7])
 

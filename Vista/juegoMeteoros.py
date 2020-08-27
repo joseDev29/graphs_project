@@ -4,7 +4,7 @@ screen_width=900
 screen_height=600
 black=(0,0,0)
 white=(255,255,255)
-
+pygame.init()
 class Meteor(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()

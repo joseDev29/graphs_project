@@ -3,6 +3,7 @@ class Vertice:
         self.dato=dato
         self.ListaAdyacentes=[]
         self.coordenadas=[0,0]
+        self.ListaIncidentes=[]
 
     def getDato(self):
         return self.dato
@@ -21,3 +22,9 @@ class Vertice:
 
     def setCoordenadas(self, valores):
         self.coordenadas= valores
+
+    def setListaIncidentes(self, lista):
+        self.ListaIncidentes = lista
+
+    def getListaIncidentes(self):
+        return self.ListaIncidentes
